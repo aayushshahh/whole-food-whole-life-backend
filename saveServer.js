@@ -23,6 +23,7 @@ mongoose
 
 let userModel = mongoose.model("Users", schemaData.userSchema);
 let foodLogModel = mongoose.model("FoodLog", schemaData.userFoodLogSchema);
+let recipeModel = mongoose.model("Recipes", schemaData.userRecipes);
 
 app.get("/", async (req, res) => {
   res.sendStatus(200);
@@ -353,6 +354,87 @@ app.post("/apiv1/trackWater", async (req, res) => {
         .catch((error) => {
           var resData = {
             Message: "Record not added, failure",
+            Data: error,
+          };
+          res.json({ data: resData });
+        });
+    }
+  });
+});
+
+app.post("/apiv1/addRecipe", (req, res) => {
+  var userID = req.body.userId;
+  var recipeName = req.body.recipeName;
+  var calories = req.body.calories;
+  var serving = req.body.servingSize;
+  var carbs = req.body.carbs;
+  var fats = req.body.fats;
+  var protein = req.body.protein;
+  var ingredients = req.body.ingredients;
+  recipeModel.findOne({ UserID: userID }, (err, recipe) => {
+    if (err) {
+      console.log(err);
+    }
+    if (recipe) {
+      var newRecipe = {
+        recipeName: recipeName,
+        Calories: calories,
+        ServingSize: serving,
+        Carbs: carbs,
+        Fats: fats,
+        Protein: protein,
+        Ingredients: ingredients,
+      };
+      var recipeArray = recipe.recipeList;
+      recipeArray.push(newRecipe);
+      recipeModel
+        .findOneAndUpdate(
+          { UserID: userID },
+          { recipeList: recipeArray },
+          { new: true }
+        )
+        .then((recipe) => {
+          var resData = {
+            Message: "New recipe added",
+            Data: recipe,
+          };
+          res.json({ data: resData });
+        })
+        .catch((err) => {
+          var resData = {
+            Message: "Adding recipe failure",
+            Data: err,
+          };
+          res.json({ data: resData });
+        });
+    } else {
+      var newRecipe = {
+        UserID: userID,
+        recipeList: [
+          {
+            recipeName: recipeName,
+            Calories: calories,
+            ServingSize: serving,
+            Carbs: carbs,
+            Fats: fats,
+            Protein: protein,
+            Ingredients: ingredients,
+          },
+        ],
+      };
+      var recipeAdd = new recipeModel(newRecipe);
+      recipeAdd
+        .save()
+        .then((result) => {
+          var resData = {
+            Message: "New Recipe Added Successfully",
+            Data: result,
+          };
+          res.json({ data: resData });
+        })
+        .catch((error) => {
+          var resData = {
+            Message: "Recipe not added, failure",
             Data: error,
           };
           res.json({ data: resData });
