@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: node-server-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "node-ip"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: node-server-service
+                port:
+                  number: 8000
