@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-server-deployment-two
+  namespace: default
+  labels:
+    app: node-server-deployment-two
+spec:
+  replicas: 1 # number of pods
+  selector:
+    matchLabels:
+      app: node-server-deployment-two
+  template:
+    metadata:
+      labels:
+        app: node-server-deployment-two
+    spec:
+      containers:
+        - name: save-server-node
+          image: us-west1-docker.pkg.dev/dcsc-371007/whole-food-whole-life/save-server-node:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              protocol: TCP

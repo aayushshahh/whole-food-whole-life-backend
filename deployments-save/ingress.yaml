@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: node-server-ingress-two
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "node-save-ip"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: node-server-service-two
+                port:
+                  number: 8080

@@ -6,7 +6,7 @@ const Constants = require("./Constants");
 const { response } = require("express");
 const bodyParser = require("body-parser");
 
-const port = 8000;
+const port = 8080;
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -96,7 +96,7 @@ app.post("/apiv1/trackMeal", async (req, res) => {
   let month = ("0" + (DateObj.getMonth() + 1)).slice(-2);
   let year = DateObj.getFullYear();
   let date = day + " " + month + " " + year;
-  foodLogModel.findOne({ UserID: UserID }, (err, foodLog) => {
+  foodLogModel.findOne({ "Data.UserID": UserID }, (err, foodLog) => {
     if (err) {
       console.log(err);
     }
@@ -132,7 +132,7 @@ app.post("/apiv1/trackMeal", async (req, res) => {
         foodLog.Data.FoodData[index] = userDayLog[0];
         foodLogModel
           .findOneAndUpdate(
-            { UserID: UserID },
+            { "Data.UserID": UserID },
             { Data: foodLog.Data },
             { new: true }
           )
@@ -178,7 +178,7 @@ app.post("/apiv1/trackMeal", async (req, res) => {
         foodLog.Data.FoodData.push(log);
         foodLogModel
           .findOneAndUpdate(
-            { UserID: UserID },
+            { "Data.UserID": UserID },
             { Data: foodLog.Data },
             { new: true }
           )
@@ -260,7 +260,7 @@ app.post("/apiv1/trackWater", async (req, res) => {
   let month = ("0" + (DateObj.getMonth() + 1)).slice(-2);
   let year = DateObj.getFullYear();
   let date = day + " " + month + " " + year;
-  foodLogModel.findOne({ UserID: userID }, (err, foodLog) => {
+  foodLogModel.findOne({ "Data.UserID": userID }, (err, foodLog) => {
     if (err) {
       console.log(err);
     }
@@ -276,7 +276,7 @@ app.post("/apiv1/trackWater", async (req, res) => {
         foodLog.Data.FoodData[index] = userDayLog[0];
         foodLogModel
           .findOneAndUpdate(
-            { UserID: userID },
+            { "Data.UserID": userID },
             { Data: foodLog.Data },
             { new: true }
           )
@@ -306,7 +306,7 @@ app.post("/apiv1/trackWater", async (req, res) => {
         foodLog.Data.FoodData.push(newLog);
         foodLogModel
           .findOneAndUpdate(
-            { UserID: userID },
+            { "Data.UserID": userID },
             { Data: foodLog.Data },
             { new: true }
           )
@@ -365,12 +365,12 @@ app.post("/apiv1/trackWater", async (req, res) => {
 app.post("/apiv1/addRecipe", (req, res) => {
   var userID = req.body.userId;
   var recipeName = req.body.recipeName;
-  var calories = req.body.calories;
-  var serving = req.body.servingSize;
-  var carbs = req.body.carbs;
-  var fats = req.body.fats;
-  var protein = req.body.protein;
-  var ingredients = req.body.ingredients;
+  var calories = parseInt(req.body.calories);
+  var serving = parseInt(req.body.servingSize);
+  var carbs = parseInt(req.body.carbs);
+  var fats = parseInt(req.body.fats);
+  var protein = parseInt(req.body.protein);
+  var ingredients = req.body.ingredients; //array
   recipeModel.findOne({ UserID: userID }, (err, recipe) => {
     if (err) {
       console.log(err);

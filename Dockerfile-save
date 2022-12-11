@@ -1,0 +1,11 @@
+FROM node:latest
+
+WORKDIR /src
+
+COPY . /src/
+
+RUN npm install --only=production && npm install -g pm2
+
+EXPOSE 8080
+
+CMD ["pm2-runtime", "start", "saveServer.js"]
